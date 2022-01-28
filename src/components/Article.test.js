@@ -38,6 +38,11 @@ test('renders "Associated Press" when no author is given', ()=> {
 });
 
 test('executes handleDelete when the delete button is pressed', ()=> {
+    const mockDelete = jest.fn();
+    render(<Article article={testArticle} handleDelete={mockDelete} />);
+    const deleteButton = screen.getByTestId('deleteButton');
+    userEvent.click(deleteButton);
+    expect(mockDelete).toHaveBeenCalled();
 });
 
 //Task List: 
