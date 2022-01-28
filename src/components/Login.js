@@ -18,6 +18,9 @@ const Login = () => {
         axios.post('http://localhost:5000/api/login', user)
             .then(resp => {
                 setError('');
+                localStorage.setItem('role', resp.data.role);
+                localStorage.setItem('token', resp.data.token);
+                localStorage.setItem('username', resp.data.username);
                 push('/view');
             })
             .catch(err => {
