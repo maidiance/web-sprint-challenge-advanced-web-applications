@@ -1,12 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+const initialUser = {
+    username: '',
+    password: '',
+};
+
 const Login = () => {
+    const [user, setUser] = useState(initialUser);
+    const [error, setError] = useState('');
+    const { push } = useHistory();
+
+    const handleSubmit = e => {
+        e.preventDefault();
+        axios.post('http://localhost:5000/api/login', user)
+            .then(resp => {
+                setError('');
+                push('/view');
+            })
+            .catch(err => {
+                setError(err);
+            })
+    }
+    
+    const handleChange = e => {
+        setUser({
+            ...user,
+            [e.target.name]: e.target.value
+        });
+    }
     
     return(<ComponentContainer>
         <ModalContainer>
             <h1>Welcome to Blogger Pro</h1>
             <h2>Please enter your account information.</h2>
+            {error && <h2 id='error'>Login error, please try again.</h2>}
+            <form className='login' onSubmit={handleSubmit}>
+                <label>Username
+                <input
+                    id='username'
+                    type='text'
+                    name='username'
+                    onChange={handleChange}
+                    value={user.username}
+                /></label>
+                <label>Password
+                <input
+                    id='password'
+                    type='password'
+                    name='password'
+                    onChange={handleChange}
+                    value={user.password}
+                /></label>
+                <button id='submit'>Login</button>
+            </form>
         </ModalContainer>
     </ComponentContainer>);
 }
@@ -14,12 +63,16 @@ const Login = () => {
 export default Login;
 
 //Task List
-//1. Build login form DOM from scratch, making use of styled components if needed. Make sure the username input has id="username" and the password input as id="password".
+//1. Build login form DOM from scratch, making use of styled components if needed.
+// Make sure the username input has id="username" and the password input as id="password".
 //2. Add in a p tag with the id="error" under the login form for use in error display.
 //3. Add in necessary local state to support login form and error display.
-//4. When login form is submitted, make an http call to the login route. Save the auth token on a successful response and redirect to view page.
-//5. If the response is not successful, display an error statement. **a server provided error message can be found in ```err.response.data```**
-//6. MAKE SURE TO ADD id="username", id="password", id="error" AND id="submit" TO THE APPROPRIATE DOM ELEMENTS. YOUR AUTOTESTS WILL FAIL WITHOUT THEM.
+//4. When login form is submitted, make an http call to the login route.
+// Save the auth token on a successful response and redirect to view page.
+//5. If the response is not successful, display an error statement.
+// **a server provided error message can be found in ```err.response.data```**
+//6. MAKE SURE TO ADD id="username", id="password", id="error" AND id="submit" TO THE APPROPRIATE DOM ELEMENTS.
+// YOUR AUTOTESTS WILL FAIL WITHOUT THEM.
 
 const ComponentContainer = styled.div`
     height: 70%;
